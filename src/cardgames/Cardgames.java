@@ -19,8 +19,7 @@
 package cardgames;
 
 import java.util.HashMap;
-
-import cardgames.Card.Arvo;
+import cardgames.Card.Rank;
 /**
  * 
  * @author Juhani Vähä-Mäkilä, 2017 GNU GPL v2
@@ -29,7 +28,7 @@ import cardgames.Card.Arvo;
  */
 public class Cardgames {
 	static final Dealer j1=new Dealer();
-	static final HashMap<Arvo,Integer> MAP=createMap();
+	static final HashMap<Rank,Integer> MAP=createMap();
 	
 	@SuppressWarnings("javadoc")
 	public static void main(String[] args) {
@@ -51,7 +50,7 @@ public class Cardgames {
 		
 	}
 
-	private static HashMap<Arvo, Integer> createMap() {
+	private static HashMap<Rank, Integer> createMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}
