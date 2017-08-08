@@ -4,8 +4,7 @@
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    the Free Software Foundation; version 2 of the License.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,73 +17,126 @@
     */
 package cardgames;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import javax.imageio.ImageIO;
+
 /** Models a playing card
  * @author Juhani Vähä-Mäkilä, 2017 GNU GPL v2
  * @version 1.0
  */
-class Card implements Comparable<Card> {
-	//************
-	//Tietokentät*
-	//************
-	/** Kortin maa*/
-	private Maa maa;
-	/** Kortin arvo*/
-	private Arvo arvo;
+final class Card implements Comparable<Card>, Serializable {
+
+	//***********
+	//Attributes*
+	//***********
+	/** Suit of card*/
+	private Suit suit;
+	/** Rank of card*/
+	private Rank rank;
+	/**	Picture representing the card*/
+	private BufferedImage pic;
+	private static final long serialVersionUID = 1L;
+	/**Common back art for all cards.*/
+	private static final BufferedImage backArt=setBackArt();
 	
-	//**************************************
-	//Kortin mahdolliset arvot sisäluokkina*
-	//**************************************
-	/** Sisäluokka Kortin maata varten.
+	//************************************************************
+	//Rank-Suit combinations of cards as inner emun type classes*
+	//************************************************************
+	/** Suit of card
 	 * 
-	 * @author Juhani Vähä-Mäkilä, 2016 CC BY-NC-ND
-	 *
+	 * @author Juhani Vähä-Mäkilä, 2017 GNU GPL v2
+	 * @version final
 	 */
-	public enum Maa {
-		HERTTA, RISTI, RUUTU, PATA
+	public enum Suit {
+		HEARTS, CLUBS, DIAMONDS, SPADES
 		}
-	/** Sisäluokka Kortin arvoa varten.
+	/** Rank of card
 	 * 
-	 * @author Juhani Vähä-Mäkilä, 2016 CC BY-NC-ND
-	 *
+	 * @author Juhani Vähä-Mäkilä, 2017 GNU GPL v2
+	 * @version final
 	 */
-	public enum Arvo {
+	public enum Rank {
 		A,II,III,IV,V,VI,VII,VIII,IX,X,J,Q,K
 }
-	 //*************
-	 //Konstruktori*
-	 //*************
-	/** Luo uuden Kortin.
-	 * @param maa Kortin maa (tyyppiä enum)
-	 * @param arvo Kortin arvo (tyyppiä enum)
+	 //************
+	 //Konstructor*
+	 //************
+	/** Creates a new card.
+	 * @param suit Suit of card.
+	 * @param rank Rank of card.
 	 */
-	public Card(Maa maa, Arvo arvo) {
-		this.maa=maa;
-		this.arvo=arvo;
+	public Card(Suit suit, Rank rank) {
+		this.suit=suit;
+		this.rank=rank;
+		this.pic=setPic();
 	}
-	//********************
-	 //Havainnoitimetodit*
-	 //*******************
-	 /** Palauttaa kortin arvon.
-	 * @return Kortin Arvo. Arvo on enum tyyppiä.
+	//********
+	//Setters*
+	//********
+	/**
+	 * Sets the back art of all cards.
+	 * @return Image of the back art.
 	 */
-	public Arvo getArvo() {
-		return this.arvo;
+	private static BufferedImage setBackArt() {
+		BufferedImage temp=null;
+		try {
+			temp=ImageIO.read(new File("img/BackArt.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return temp;
 	}
-	/** Palauttaa kortin maan.
-	 * @return Kortin maa.
+	/**
+	 * Sets the right picture file for the card.
+	 * @return
 	 */
-	public Maa getMaa() {
-		return this.maa;
-}
-	/** Palauttaa Kortin tiedot merkkijonona.
-	 * @return {@literal <Maa Arvo>}
+	private BufferedImage setPic() {
+		BufferedImage img=null;
+		try {
+		    img = ImageIO.read(new File("img/"+this.asString()+".png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return img;
+	}
+	/**
+	 * Returns a standardized string to be used in a file name.
+	 * @return A standardized string to be used in a file name.
+	 */
+	private String asString() {
+		return this.rank+"_of_"+this.suit;
+	}
+	//*********
+	 //Getters*
+	 //********
+	/**
+	 * Returns the image representing the card.
+	 * @return Image representing the card.
+	 */
+	public BufferedImage getPic() {
+		return this.pic;
+		
+	}
+	/**
+	 * Returns the back art of card.
+	 * @return Image representing the back art of card.
+	 */
+	public BufferedImage getBackArt() {
+		return Card.backArt;
+	}
+	/** String representation of the card.
+	 * @return {@literal <RANK of SUIT>}
 	 */
 	@Override
 	public String toString() {
-		return "<"+this.maa+" "+this.arvo+">";
+		return "<"+this.rank+" of "+this.suit+">";
 	}
-	/** Kortti-olioiden yhtäsuuruuden vertaus.
-	 * @return true jos yhtäsuuri, false jos ei.
+	/** Checks if two object are equal.
+	 * @return True if they are, False if not.
 	 */
 	@Override
 	  public boolean equals(Object ob) {
@@ -94,17 +146,15 @@ class Card implements Comparable<Card> {
 	    return this.compareTo(k)==0;
 	  }
 	
-	/** Comparable rajapintaa varten.
-	 * @param kortti Kortti johon verrataan.
-	 * @return {@literal <0 jos pienempi, 0 jos yhtäsuuri, >0 jos suurempi}
-	 * @throws NullPointerException Mikäli verrattava Kortti==null.
+	/** Implements the Comparable interface.
+	 * @param card The card what to compare against.
+	 * @return {@literal <0 if smaller, 0 if equal, >0 if larger}
 	 */
 	@Override
-	public int compareTo(Card kortti) throws NullPointerException {
+	public int compareTo(Card card) {
 		{
-			if (kortti==null) throw new NullPointerException();
-			if (Player.MAP.get(this.arvo).intValue()<Player.MAP.get(kortti.arvo).intValue()) return -1;
-			if (Player.MAP.get(this.arvo).intValue()==Player.MAP.get(kortti.arvo).intValue()) return 0;
+			if (Cardgames.MAP.get(this.rank).intValue()<Cardgames.MAP.get(card.rank).intValue()) return -1;
+			if (Cardgames.MAP.get(this.rank).intValue()==Cardgames.MAP.get(card.rank).intValue()) return 0;
 			else
 				return 1;
 
