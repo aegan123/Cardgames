@@ -1,11 +1,10 @@
 /*
-	Class representing the dealer in cardgames
+	Class representing the dealer in card games
     Copyright (C) 2017  Juhani Vähä-Mäkilä, juhani@fmail.co.uk
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    the Free Software Foundation; version 2 of the License.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,59 +16,115 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
     */
 package cardgames;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import cardgames.Card.Arvo;
-import cardgames.Card.Maa;
+import cardgames.Card.Rank;
+import cardgames.Card.Suit;
 
 /** 
  * @version 0.5
  */
-class Dealer {
+class Dealer implements Serializable {
 	//************
 	//Attributes*
 	//************
 	
-	/** Protodeck. One base deck to be created only once.*/
-	private static final ArrayList<Card> protodeck=createProtoDeck();
-	/**
-	 * 
+	private static final long serialVersionUID = 1L;
+	/** Protodeck. One base deck to be created only once.
+	 * All decks used in games are copies of this.
 	 */
-	private List<Card> deck;
+	private static final Card[] protodeck=createProtoDeck();
+	/**The actual deck used within games. */
+	private LinkedList<Card> deck;
 	
-	//**************
-	//Constractor*
-	//**************
-	/** Constracts a new dealer.
-	 * 
-	 */
+	//************
+	//Constructor*
+	//************
+	/** Constructs a new dealer. */
 	public Dealer() {
+		this.deck=null;
 	}
 
+	//*********
+	//Setters*
+	//********
+	
 	/**
 	 * Creates the protodeck with 52 cards.
 	 * Exactly one card of any given type.
 	 * @return
 	 */
-	private static ArrayList<Card> createProtoDeck() {
-		ArrayList<Card> uusi=new ArrayList<Card>(52);
-		for (Maa maa: Maa.values()) {
-			for (Arvo arvo: Arvo.values()) {
-				uusi.add(new Card(maa, arvo));
+	private static Card[] createProtoDeck() {
+		List<Card> temp=null;
+		File f=new File("data/protodeck.dat");
+		if (f.exists() && f.canRead()) {
+			ObjectInputStream ois=null;
+			try {
+				ois=new ObjectInputStream(new FileInputStream(f));
+				temp=(ArrayList<Card>) ois.readObject();
+				ois.close();
+			} catch (ClassNotFoundException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} else {
+			ObjectOutputStream oos=null;
+		temp=new ArrayList<Card>(52);
+		for (Suit suit: Suit.values()) {
+			for (Rank rank: Rank.values()) {
+				temp.add(new Card(suit, rank));
 			}}
-		return uusi;
+		try {
+			oos=new ObjectOutputStream(new FileOutputStream("data/protodeck.dat"));
+			oos.writeObject(temp);
+			oos.flush();
+			oos.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}}
+		return temp.toArray(new Card[52]);
 	}
-
-	//**************
-	//Muutosmetodit*
-	//**************
-	/** Luo uuden pakan.
-	 * @param lkm The number of 52 card deck needed.
+	/** Creates a new deck.
+	 * @param lkm The number of 52 card deck(s) needed. Will default to 1 if parameter is <=0 or >10.
 	 * 
 	 */
 	public void setDeck(int lkm) {
+		if (lkm<=0 || lkm>10) this.deck=copyProtoDeck(1);
+		else this.deck=copyProtoDeck(lkm);
 		
 	}
+/**
+ * Copies the protodeck for use.
+ * @param lkm The number of 52 card decks we want. Is always >=1.
+ * @return The desired deck.
+ */
+	private LinkedList<Card> copyProtoDeck(int lkm) {
+		LinkedList<Card> temp=new LinkedList<Card>();
+		for (int i=0; i<lkm;i++) {
+			for (int j=0;j<protodeck.length;j++){
+				temp.add(protodeck[j]);
+			}
+		}
+		return temp;
+	}
 
+	//********
+	//Getters*
+	//********
+	
+	public Card getCard(){
+		return this.deck.pop();
+	}
 
 }
