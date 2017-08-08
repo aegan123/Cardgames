@@ -1,5 +1,5 @@
 /*
-	For future use
+	Class for a single player "slots machine" type cli poker game
     Copyright (C) 2017  Juhani Vähä-Mäkilä, juhani@fmail.co.uk
 
     This program is free software; you can redistribute it and/or modify
@@ -20,45 +20,15 @@ package cardgames;
 
 import java.util.*;
 
-/** Varsinainen pokeripeli.
- * @author Juhani Vähä-Mäkilä, 2016 CC BY-NC-ND
- * http://creativecommons.org/licenses/by-nc-nd/4.0/
+/** 
+ * @author Juhani Vähä-Mäkilä, 2017
  * @version 0.5
  */
 public class Pokeripeli {
-	private static final Dealer j1=new Dealer();
-	@SuppressWarnings("javadoc")
-	public static void main(String[] args) {
-		/* if (args.length!=1) {
-			System.out.println("Käyttö:\njava -jar Pokeripeli cli.\ntai\njava -jar Pokeripeli gui.");
-			return;
-		} */
-		//Dealer j1=new Dealer("Kalle");
-	/*	if (args[0].equalsIgnoreCase("gui"))
-			pokeriGUI(j1);
-		else { 
-			if (args[0].equalsIgnoreCase("cli")) {*/
-		pokeriCLI();
-
-
-		//return;}
-	}
-		//System.out.println("Virheellinen parametri.\nKäyttö:\njava Pokeripeli cli.\ntai\njava Pokeripeli gui."); 
-	//}
-	/**
-	 * Tulevaisuuden tarpeita varten.
-	 * @param j1
-	 */
-	private static void pokeriGUI() {
-		// TODO Auto-generated method stub
-		
-	}
 	/** CLI käyttöliittymä peliin.
-	 * 
-	 * @param j1 Dealer.
 	 */
 	@SuppressWarnings("resource")
-	private static void pokeriCLI() {
+	static void pokeriCLI() {
 		Scanner sc=new Scanner(System.in);
 		System.out.println("Tervetuloa pelaamaan pokeria.");
 		System.out.println("\nSinulle jaetaan viisi korttia ja tarkoitus on saada mahdollisimman hyvä käsi.");
@@ -94,11 +64,11 @@ public class Pokeripeli {
 	 * @param p1 Player.
 	 */
 	private static void cliPeli(Player p1) {
-		if (j1.getPakka().size()<5) {
+		if (Cardgames.j1.getPakka().size()<5) {
 			System.out.println("\nSekoitetaan uusi pakka!");
-			j1.setPakka();
+			Cardgames.j1.setPakka();
 		} else {}
-		p1.setHand(j1); 
+		p1.setHand(Cardgames.j1); 
 		System.out.println("\n\nSait seuraavanlaisen käden.");
 		//System.out.println(p1.getHand());
 		try {
@@ -108,8 +78,8 @@ public class Pokeripeli {
 		}
 		catch (NullPointerException e) {
 			System.out.println("\nTapahtui odottamaton virhe! Koitetaan palautua.");
-			if (j1.getPakka().isEmpty()) {
-				j1.setPakka();
+			if (Cardgames.j1.getPakka().isEmpty()) {
+				Cardgames.j1.setPakka();
 				return;
 			}
 		}
@@ -122,8 +92,8 @@ public class Pokeripeli {
 		}
 		catch (NullPointerException f) {
 			System.out.println("Tapahtui odottamaton virhe! Koitetaan palautua.");
-			if (j1.getPakka().isEmpty()) {
-				j1.setPakka();
+			if (Cardgames.j1.getPakka().isEmpty()) {
+				Cardgames.j1.setPakka();
 			}
 		}
 		System.out.println("\n");
@@ -156,7 +126,7 @@ public class Pokeripeli {
 	/** Vaihtaa kädestä käyttäjän määrittelemät kortit.
 	 * Ei anna vaihtaa samaa korttia useasti.
 	 * @param p1 Player.
-	 * @param j1 Dealer.
+	 * @param Cardgames.j1 Dealer.
 	 */
 	@SuppressWarnings("resource")
 	private static void kortinVaihto(Player p1) {
@@ -191,27 +161,27 @@ public class Pokeripeli {
 		
 		switch (valinta) {
 		case (1):
-			p1.vaihdaKortti(valinta-1, j1);
+			p1.vaihdaKortti(valinta-1, Cardgames.j1);
 			vaihtoja++;
 			break;
 		case (2):
-			p1.vaihdaKortti(valinta-1, j1);
+			p1.vaihdaKortti(valinta-1, Cardgames.j1);
 			vaihtoja++;
 			break;	
 		case (3):
-			p1.vaihdaKortti(valinta-1, j1);
+			p1.vaihdaKortti(valinta-1, Cardgames.j1);
 			vaihtoja++;
 			break;
 		case (4):
-			p1.vaihdaKortti(valinta-1, j1);
+			p1.vaihdaKortti(valinta-1, Cardgames.j1);
 			vaihtoja++;
 			break;
 		case (5):
-			p1.vaihdaKortti(valinta-1, j1);
+			p1.vaihdaKortti(valinta-1, Cardgames.j1);
 			vaihtoja++;
 			break;
 		case (6):
-			p1.setHand(j1);
+			p1.setHand(Cardgames.j1);
 			vaihtoja=5;
 			break;
 		default:
