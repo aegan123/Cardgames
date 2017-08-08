@@ -33,11 +33,11 @@ final class Card implements Comparable<Card>, Serializable {
 	//Attributes*
 	//***********
 	/** Suit of card*/
-	private Suit suit;
+	private final Suit suit;
 	/** Rank of card*/
-	private Rank rank;
+	private final Rank rank;
 	/**	Picture representing the card*/
-	private BufferedImage pic;
+	private final BufferedImage pic;
 	private static final long serialVersionUID = 1L;
 	/**Common back art for all cards.*/
 	private static final BufferedImage backArt=setBackArt();
@@ -62,7 +62,7 @@ final class Card implements Comparable<Card>, Serializable {
 		A,II,III,IV,V,VI,VII,VIII,IX,X,J,Q,K
 }
 	 //************
-	 //Konstructor*
+	 //Constructor*
 	 //************
 	/** Creates a new card.
 	 * @param suit Suit of card.

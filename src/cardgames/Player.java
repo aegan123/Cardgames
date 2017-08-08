@@ -38,7 +38,7 @@ class Player implements Serializable, Comparable<Player> {
 
  
  	//************
- 	//Constractor*
+ 	//Constructor*
  	//************
 
  public Player() {

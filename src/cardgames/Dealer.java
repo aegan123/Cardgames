@@ -65,7 +65,7 @@ class Dealer implements Serializable {
 	 */
 	private static Card[] createProtoDeck() {
 		List<Card> temp=null;
-		File f=new File("data/protodeck.dat");
+		File f=new File("protodeck.dat");
 		if (f.exists() && f.canRead()) {
 			ObjectInputStream ois=null;
 			try {
@@ -85,7 +85,7 @@ class Dealer implements Serializable {
 				temp.add(new Card(suit, rank));
 			}}
 		try {
-			oos=new ObjectOutputStream(new FileOutputStream("data/protodeck.dat"));
+			oos=new ObjectOutputStream(new FileOutputStream(f));
 			oos.writeObject(temp);
 			oos.flush();
 			oos.close();
@@ -122,7 +122,10 @@ class Dealer implements Serializable {
 	//********
 	//Getters*
 	//********
-	
+	/**
+	 * Returns the first card from the deck and removes it.
+	 * @return The first card from the deck.
+	 */
 	public Card getCard(){
 		return this.deck.pop();
 	}
