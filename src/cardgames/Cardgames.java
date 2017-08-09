@@ -28,20 +28,24 @@ import cardgames.Card.Rank;
  *
  */
 public class Cardgames {
-	static final Dealer j1=new Dealer();
+	/**Only one dealer for all games. */
+	static Dealer j1;
+	/**For numerical comparison of cards. */
 	static final HashMap<Rank,Integer> MAP=createMap();
-	private static final double versionNum=1.0;
+	
+	private static final double versionNum=0.1;
 	static final File license=new File("LICENSE");
-	static final String copyrightNotice="Cardgames version "+versionNum+", Copyright (C) "+LocalDate.now().getYear()+" Juhani Vähä-Mäkilä.\nCardgames comes with ABSOLUTELY NO WARRANTY\nThis is free software licensed under GNU GPL v. 2.0, and you are welcome to redistribute it under certain conditions.";
-	static boolean verbose;
+	static final String copyrightNotice="Cardgames version "+versionNum+", Copyright (C) "+LocalDate.now().getYear()+" Juhani Vähä-Mäkilä.\nCardgames comes with ABSOLUTELY NO WARRANTY\nThis is free software licensed under GNU GPL v. 2.0,\nand you are welcome to redistribute it under certain conditions. See file LICENSE for details.";
+	static boolean verbose=false;
 	
 	@SuppressWarnings("javadoc")
 	public static void main(String[] args) {
 		switch (args.length) {
 		case (0):
+			System.out.println("Nothing here yet.\nTo run tests on the backend use commandline option: test.");
 			break;
 		case (1):
-			if (args[0].equals("test")) verbose=true; runTests();
+			if (args[0].equals("test")) verbose=true; j1=new Dealer(); runTests();
 			break;
 		default:
 			break;
@@ -51,10 +55,26 @@ public class Cardgames {
 	}
 
 	private static void runTests() {
-		j1.setDeck(1);
+		j1.setDeck(2);
 		System.out.println(copyrightNotice);
-		for (int i=0;i<52;i++){
+		int n=j1.getSize();
+		for (int i=0;i<n;i++){
 		System.out.println(j1.getCard()); }
+		System.out.println();
+		System.out.println("deck.size == "+j1.getSize());
+		Player p1=new Player();
+		j1.setDeck(1);
+		p1.addCard(j1.getCard());
+		p1.addCard(j1.getCard());
+		p1.addCard(j1.getCard());
+		p1.addCard(j1.getCard());
+		p1.setPoints(100);
+		for (int i=0;i<4;i++) {
+		System.out.println(p1.getCard(i)); }
+		Player p2=Player.copyOf(p1);
+		System.out.println(p1);
+		System.out.println(p2);
+		
 		
 	}
 	/** Creates a HashMap for numerical comparison of cards.

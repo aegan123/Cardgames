@@ -17,13 +17,10 @@
     */
 package cardgames;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
-import javax.imageio.ImageIO;
 
-/** Models a playing card
+/** Models a playing card. Immutable.
  * @author Juhani Vähä-Mäkilä, 2017 GNU GPL v2
  * @version 1.0
  */
@@ -37,10 +34,10 @@ final class Card implements Comparable<Card>, Serializable {
 	/** Rank of card*/
 	private final Rank rank;
 	/**	Picture representing the card*/
-	private final BufferedImage pic;
-	private static final long serialVersionUID = 1L;
+	private final File pic;
+	private static final long serialVersionUID = 2L;
 	/**Common back art for all cards.*/
-	private static final BufferedImage backArt=setBackArt();
+	private static final File backArt=new File("img/BackArt.png");
 	
 	//************************************************************
 	//Rank-Suit combinations of cards as inner emun type classes*
@@ -71,37 +68,7 @@ final class Card implements Comparable<Card>, Serializable {
 	public Card(Suit suit, Rank rank) {
 		this.suit=suit;
 		this.rank=rank;
-		this.pic=setPic();
-	}
-	//********
-	//Setters*
-	//********
-	/**
-	 * Sets the back art of all cards.
-	 * @return Image of the back art.
-	 */
-	private static BufferedImage setBackArt() {
-		BufferedImage temp=null;
-		try {
-			temp=ImageIO.read(new File("img/BackArt.png"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return temp;
-	}
-	/**
-	 * Sets the right picture file for the card.
-	 * @return
-	 */
-	private BufferedImage setPic() {
-		BufferedImage img=null;
-		try {
-		    img = ImageIO.read(new File("img/"+this.asString()+".png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return img;
+		this.pic=new File("img/"+this.asString()+".png");
 	}
 	/**
 	 * Returns a standardized string to be used in a file name.
@@ -117,7 +84,7 @@ final class Card implements Comparable<Card>, Serializable {
 	 * Returns the image representing the card.
 	 * @return Image representing the card.
 	 */
-	public BufferedImage getPic() {
+	public File getPic() {
 		return this.pic;
 		
 	}
@@ -125,7 +92,7 @@ final class Card implements Comparable<Card>, Serializable {
 	 * Returns the back art of card.
 	 * @return Image representing the back art of card.
 	 */
-	public BufferedImage getBackArt() {
+	public File getBackArt() {
 		return Card.backArt;
 	}
 	/** String representation of the card.

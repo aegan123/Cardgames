@@ -96,7 +96,7 @@ public Card getCard(int i) {
 /** Sets the players name.
  * @param name New name for player.
  */
-public void setNimi(String name) {
+public void setName(String name) {
 	this.name=name;
 }
 /** Sets new points for player

@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import cardgames.Card.Rank;
@@ -67,17 +68,20 @@ class Dealer implements Serializable {
 		List<Card> temp=null;
 		File f=new File("protodeck.dat");
 		if (f.exists() && f.canRead()) {
+			if (Cardgames.verbose) System.out.println("Existing file for protodeck found. Loading it.");
 			ObjectInputStream ois=null;
 			try {
 				ois=new ObjectInputStream(new FileInputStream(f));
 				temp=(ArrayList<Card>) ois.readObject();
 				ois.close();
+				if (Cardgames.verbose) System.out.println("protodeck.size == "+temp.size());
 			} catch (ClassNotFoundException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 		} else {
+			if (Cardgames.verbose) System.out.println("Protodeck file not found. Creating new deck and file.");
 			ObjectOutputStream oos=null;
 		temp=new ArrayList<Card>(52);
 		for (Suit suit: Suit.values()) {
@@ -89,19 +93,24 @@ class Dealer implements Serializable {
 			oos.writeObject(temp);
 			oos.flush();
 			oos.close();
+			if (Cardgames.verbose) System.out.println("protodeck.size == "+temp.size());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}}
 		return temp.toArray(new Card[52]);
 	}
-	/** Creates a new deck.
+	/** Creates a new deck and shuffles it.
 	 * @param lkm The number of 52 card deck(s) needed. Will default to 1 if parameter is <=0 or >10.
 	 * 
 	 */
 	public void setDeck(int lkm) {
 		if (lkm<=0 || lkm>10) this.deck=copyProtoDeck(1);
 		else this.deck=copyProtoDeck(lkm);
+		if (Cardgames.verbose) System.out.println("deck.size == "+deck.size());
+		for (int i=0;i<20;i++){
+			Collections.shuffle(deck);
+		}
 		
 	}
 /**
@@ -123,11 +132,17 @@ class Dealer implements Serializable {
 	//Getters*
 	//********
 	/**
-	 * Returns the first card from the deck and removes it.
+	 * Returns the first card from the deck and removes it from the deck.
 	 * @return The first card from the deck.
 	 */
 	public Card getCard(){
 		return this.deck.pop();
 	}
-
+	/**
+	 * Returns the size of the deck.
+	 * @return Size of the deck.
+	 */
+	public int getSize(){
+		return deck.size();
+	}
 }
