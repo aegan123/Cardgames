@@ -1,5 +1,5 @@
 /*
-	Main starting point of program.
+	Main starting point of program
     Copyright (C) 2017  Juhani Vähä-Mäkilä, juhani@fmail.co.uk
 
     This program is free software; you can redistribute it and/or modify
