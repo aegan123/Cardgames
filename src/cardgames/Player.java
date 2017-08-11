@@ -34,6 +34,7 @@ class Player implements Serializable, Comparable<Player> {
  	private List<Card> hand;
 	/** Collected points. Value depends on game. */
  	private int points;
+ 	private boolean myTurn;
 	private static final long serialVersionUID = 1L;
 
  
@@ -88,10 +89,22 @@ public String toString() {
 public Card getCard(int i) {
 	return this.hand.get(i);
 }
-
+/** Return true/false if it's this players turn in game.
+ * @return True if it's this player turn in game. False if not.
+ */
+public boolean isMyTurn() {
+	return myTurn;
+}
 	//********
 	//Setters*
 	//********
+
+/**Set whether it's this players tuen in game.
+ * @param myTurn True or False
+ */
+public void setMyTurn(boolean myTurn) {
+	this.myTurn = myTurn;
+}
 
 /** Sets the players name.
  * @param name New name for player.

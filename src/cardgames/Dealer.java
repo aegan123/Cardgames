@@ -31,7 +31,7 @@ import java.util.List;
 import cardgames.Card.Rank;
 import cardgames.Card.Suit;
 
-/** 
+/** Class representing the dealer in card games.
  * @version 0.5
  */
 class Dealer implements Serializable {
@@ -64,6 +64,7 @@ class Dealer implements Serializable {
 	 * Exactly one card of any given type.
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private static Card[] createProtoDeck() {
 		List<Card> temp=null;
 		File f=new File("protodeck.dat");

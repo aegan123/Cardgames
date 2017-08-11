@@ -36,13 +36,14 @@ public class Cardgames {
 	private static final double versionNum=0.1;
 	static final File license=new File("LICENSE");
 	static final String copyrightNotice="Cardgames version "+versionNum+", Copyright (C) "+LocalDate.now().getYear()+" Juhani Vähä-Mäkilä.\nCardgames comes with ABSOLUTELY NO WARRANTY\nThis is free software licensed under GNU GPL v. 2.0,\nand you are welcome to redistribute it under certain conditions. See file LICENSE for details.";
+	static final String programName = "Cardgames";
 	static boolean verbose=false;
 	
 	@SuppressWarnings("javadoc")
 	public static void main(String[] args) {
 		switch (args.length) {
 		case (0):
-			System.out.println("Nothing here yet.\nTo run tests on the backend use commandline option: test.");
+			//System.out.println("Nothing here yet.\nTo run tests on the backend use commandline option: test.");
 			break;
 		case (1):
 			if (args[0].equals("test")) verbose=true; j1=new Dealer(); runTests();
@@ -50,7 +51,13 @@ public class Cardgames {
 		default:
 			break;
 		}
-			
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            @Override
+			public void run() {
+            	//GameGui gui=new GameGui();
+                new GameGui().createAndShowGUI();
+            }
+        });
 
 	}
 
