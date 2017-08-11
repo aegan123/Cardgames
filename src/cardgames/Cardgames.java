@@ -69,7 +69,7 @@ public class Cardgames {
 		System.out.println(j1.getCard()); }
 		System.out.println();
 		System.out.println("deck.size == "+j1.getSize());
-		Player p1=new Player();
+		Player p1=new Player(1);
 		j1.setDeck(1);
 		p1.addCard(j1.getCard());
 		p1.addCard(j1.getCard());

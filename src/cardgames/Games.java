@@ -38,13 +38,13 @@ abstract class Games {
 	}
 	/**
 	 * Creates a static array of players.
-	 * @param howManyPlayers How man players are there in the game.
+	 * @param howManyPlayers How many players are there in the game.
 	 * @return An Array containing the desired amount of players.
 	 */
 	protected Player[] getPlayers(int howManyPlayers) {
 		Player[] temp=new Player[howManyPlayers];
 		for (int i=0;i<howManyPlayers;i++) {
-			temp[i]=new Player();
+			temp[i]=new Player(i+1);
 		}
 		return temp;
 	}

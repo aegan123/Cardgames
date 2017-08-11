@@ -20,7 +20,6 @@
  */
 package cardgames;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -36,7 +35,7 @@ class BlackJack extends Games implements Runnable, ActionListener {
 private static int howManyPlayers;
 private static Player[] players;
 private boolean running;
-private JButton moreCards, stay, doubleBet;
+private JButton moreCards, stay, doubleBet, closeButton;
 
 public BlackJack(){
 	initiateButtons();
@@ -52,13 +51,17 @@ private void initiateButtons() {
 	moreCards.addActionListener(this);
 	stay.addActionListener(this);
 	doubleBet.addActionListener(this);
-	GameGui.closeButton.addActionListener(this);
-	GameGui.closeButton.setSize(new Dimension((int) 0.2*GameGui.screenWidth,(int) 0.2*GameGui.screenHeight));
+	closeButton.addActionListener(this);
+	closeButton.setSize(GameGui.buttonSize);
 	moreCards.setActionCommand("1");
 	stay.setActionCommand("2");
 	doubleBet.setActionCommand("3");
 	doubleBet.setEnabled(false);
-	GameGui.closeButton.setActionCommand("0");
+	closeButton.setActionCommand("0");
+	GameGui.gameFrame.getContentPane().add(moreCards);
+	GameGui.gameFrame.getContentPane().add(stay);
+	GameGui.gameFrame.getContentPane().add(doubleBet);
+	GameGui.gameFrame.getContentPane().add(closeButton);
 	
 }
 @Override
@@ -69,7 +72,7 @@ public void run(){
 	players=getPlayers(howManyPlayers);
 	if (players.length>1) startMultiPlayer();
 	else startSinglePlayer();
-		JOptionPane.showMessageDialog(GameGui.gameFrame, players.length);
+		//JOptionPane.showMessageDialog(GameGui.gameFrame, players.length);
 		while (running){
 			try {
 				Thread.sleep(1000);
@@ -94,6 +97,9 @@ private void startSinglePlayer() {
 private void startMultiPlayer() {
 	// TODO Auto-generated method stub
 	
+}
+private void jdksjd(){
+	GameGui.gameFrame.getName();
 }
 
 @Override
@@ -149,7 +155,7 @@ private int getNumOfPlayers() {
 			JOptionPane.showMessageDialog(GameGui.gameFrame, "Error! Not a number.\nPlease enter a number.");
 			continue;
 		}
-		if (howManyPlayers<1) {
+		if (num<1) {
 			JOptionPane.showMessageDialog(GameGui.gameFrame, "Error!\nThere has to be at least ONE player.");
 			continue;
 		}

@@ -35,6 +35,7 @@ class Player implements Serializable, Comparable<Player> {
 	/** Collected points. Value depends on game. */
  	private int points;
  	private boolean myTurn;
+	private int playerNum;
 	private static final long serialVersionUID = 1L;
 
  
@@ -42,7 +43,8 @@ class Player implements Serializable, Comparable<Player> {
  	//Constructor*
  	//************
 
- public Player() {
+ public Player(int i) {
+	 this.playerNum=i;
 	 this.name=null;
 	 this.points=0;
 	 this.hand=new ArrayList<Card>();
@@ -94,6 +96,13 @@ public Card getCard(int i) {
  */
 public boolean isMyTurn() {
 	return myTurn;
+}
+/**
+ * 
+ * @return
+ */
+public int getPlayerNum(){
+	return this.playerNum;
 }
 	//********
 	//Setters*

@@ -40,7 +40,8 @@ class GameGui extends JFrame implements ActionListener {
 	static JFrame gameFrame;
 	private static JButton peli1;
 	private static JButton peli2;
-	static JButton closeButton=new JButton("Close game");
+	private static JButton closeButton=new JButton("Exit");
+	static Dimension buttonSize=new Dimension((int) 0.2*screenWidth,(int) 0.2*screenHeight);
 	
 	public GameGui() {
 		frame = new JFrame(Cardgames.programName);
@@ -56,20 +57,17 @@ class GameGui extends JFrame implements ActionListener {
         peli1=new JButton("Peli1");
         peli2=new JButton("Peli2");
         
-        //JLabel emptyLabel = new JLabel("Please select a game.");
-        //emptyLabel.setPreferredSize(new Dimension(500,500));
-        //frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
-        //JTextField hello=new JTextField("Please select a game.",1);
-        //hello.validate();
-        peli1.setSize(new Dimension((int) 0.2*screenWidth,(int) 0.2*screenHeight));
+        peli1.setSize(buttonSize);
         peli1.validate();
         peli1.setActionCommand("1");
         peli2.setActionCommand("2");
         peli1.addActionListener(this);
         peli2.addActionListener(this);
-        //frame.getContentPane().add(hello);
+        closeButton.addActionListener(this);
+        closeButton.setActionCommand("0");
         frame.getContentPane().add(peli1);
         frame.getContentPane().add(peli2);
+        frame.getContentPane().add(closeButton);
         
  
         //Display the window.
@@ -85,6 +83,8 @@ class GameGui extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (Integer.parseInt(e.getActionCommand())) {
+		case(0):
+			System.exit(0);
 		case(1):
 			initializeGame("BlackJack");
 			new Thread(new BlackJack()).start();
@@ -96,8 +96,6 @@ class GameGui extends JFrame implements ActionListener {
 			break;
 		}
 		
-		//if ("peli1".equals(e.getActionCommand())) JOptionPane.showMessageDialog(null,"You pressed the peli1!");
-		//else JOptionPane.showMessageDialog(null,"You pressed the peli2!");
 		
 	}
 	/**
@@ -105,10 +103,10 @@ class GameGui extends JFrame implements ActionListener {
 	 */
 	private void initializeGame(String name) {
 		gameFrame=new JFrame(name);
+		gameFrame.getContentPane().setLayout(new FlowLayout());
 		gameFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		gameFrame.setSize(screenWidth/2, screenHeight/2);
         gameFrame.setLocation(screenWidth/4, screenHeight/4);
-        gameFrame.getContentPane().add(closeButton);
         gameFrame.setVisible(true);
 		
 	}
