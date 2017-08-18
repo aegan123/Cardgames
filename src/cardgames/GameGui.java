@@ -86,7 +86,7 @@ class GameGui extends JFrame implements ActionListener {
 			System.exit(0);
 		case(1):
 			initGame("BlackJack");
-			new Thread(new BlackJack()).start();
+			new Thread(new Blackjack()).start();
 			break;
 		case(2):
 			//initGame("Some other game");
