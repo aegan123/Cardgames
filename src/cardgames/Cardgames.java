@@ -43,7 +43,16 @@ public class Cardgames {
 	public static void main(String[] args) {
 		switch (args.length) {
 		case (0):
+			j1=new Dealer();
+			//j1.setDeck(1);
 			//System.out.println("Nothing here yet.\nTo run tests on the backend use commandline option: test.");
+			javax.swing.SwingUtilities.invokeLater(new Runnable() {
+	            @Override
+				public void run() {
+	            	//GameGui gui=new GameGui();
+	                new GameGui().createAndShowGUI();
+	            }
+	        });
 			break;
 		case (1):
 			if (args[0].equals("test")) verbose=true; j1=new Dealer(); runTests();
@@ -51,13 +60,7 @@ public class Cardgames {
 		default:
 			break;
 		}
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            @Override
-			public void run() {
-            	//GameGui gui=new GameGui();
-                new GameGui().createAndShowGUI();
-            }
-        });
+		
 
 	}
 
@@ -66,15 +69,15 @@ public class Cardgames {
 		System.out.println(copyrightNotice);
 		int n=j1.getSize();
 		for (int i=0;i<n;i++){
-		System.out.println(j1.getCard()); }
+		System.out.println(j1.dealCard()); }
 		System.out.println();
 		System.out.println("deck.size == "+j1.getSize());
 		Player p1=new Player(1);
 		j1.setDeck(1);
-		p1.addCard(j1.getCard());
-		p1.addCard(j1.getCard());
-		p1.addCard(j1.getCard());
-		p1.addCard(j1.getCard());
+		p1.addCard(j1.dealCard());
+		p1.addCard(j1.dealCard());
+		p1.addCard(j1.dealCard());
+		p1.addCard(j1.dealCard());
 		p1.setPoints(100);
 		for (int i=0;i<4;i++) {
 		System.out.println(p1.getCard(i)); }

@@ -102,6 +102,15 @@ final class Card implements Comparable<Card>, Serializable {
 	public String toString() {
 		return "<"+this.rank+" of "+this.suit+">";
 	}
+	/** Returns the rank of the card.
+	 * @return Rank of the card.
+	 */
+	public Rank getRank() {
+		return this.rank;
+	}
+	//*******
+	//Others*
+	//*******
 	/** Checks if two object are equal.
 	 * @return True if they are, False if not.
 	 */

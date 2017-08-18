@@ -36,7 +36,7 @@ class Player implements Serializable, Comparable<Player> {
  	private int points;
  	private boolean myTurn;
 	private int playerNum;
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
  
  	//************
@@ -97,9 +97,8 @@ public Card getCard(int i) {
 public boolean isMyTurn() {
 	return myTurn;
 }
-/**
- * 
- * @return
+/** Returns players number which is used in multiplayer scenarios.
+ * @return Players number used in multiplayer situations.
  */
 public int getPlayerNum(){
 	return this.playerNum;
@@ -153,6 +152,12 @@ public void changeCard (int i, Card card) {
 public void removeCard(int i){
 	this.hand.remove(i);
 }
+/**
+ * Empties the hand after a game.
+ */
+public void emptyHand() {
+	this.hand.clear();
+}
 
 	//**************
 	//Other methods*
@@ -187,6 +192,13 @@ public int compareTo(Player o) {
  */
 static Player copyOf(Player player){
 	return new Player(player);
+}
+
+/**
+ * @return
+ */
+int getNumOfcards() {
+	return hand.size();
 }
 
 

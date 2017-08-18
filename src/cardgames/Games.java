@@ -27,13 +27,12 @@ import java.util.Arrays;
  * @version 0.1
  */
 abstract class Games {
-	/**
-	 * 
+	/** Adds the desired player to the top score list of a game.
 	 * @param player The player to be added to the list.
 	 * @param list The list to add.
 	 */
 	protected void saveTopScore(Player player, Player[] list) {
-		list[9]=Player.copyOf(player);
+		list[list.length-1]=Player.copyOf(player);
 		Arrays.sort(list);
 	}
 	/**

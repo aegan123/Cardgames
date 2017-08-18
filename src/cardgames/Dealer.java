@@ -46,6 +46,8 @@ class Dealer implements Serializable {
 	private static final Card[] protodeck=createProtoDeck();
 	/**The actual deck used within games. */
 	private LinkedList<Card> deck;
+	/**Dealt hand of cards. */
+	private List<Card> hand;
 	
 	//************
 	//Constructor*
@@ -128,7 +130,22 @@ class Dealer implements Serializable {
 		}
 		return temp;
 	}
-
+	/**
+	 * Adds a card to the hand.
+	 * @param card The card to add.
+	 */
+public void addCard(Card card) {
+	if (this.hand==null) hand=new ArrayList<Card>();
+	hand.add(card);
+}
+/**
+ * Empties the hand from all card. Or completely nulls the hand.
+ * @param i True if the game is completely over and hand is no longer needed. False if hand is needed still.
+ */
+public void emptyHand(boolean i) {
+	if (i) this.hand=null;
+	else this.hand.clear();
+}
 	//********
 	//Getters*
 	//********
@@ -136,7 +153,7 @@ class Dealer implements Serializable {
 	 * Returns the first card from the deck and removes it from the deck.
 	 * @return The first card from the deck.
 	 */
-	public Card getCard(){
+	public Card dealCard(){
 		return this.deck.pop();
 	}
 	/**
@@ -145,5 +162,20 @@ class Dealer implements Serializable {
 	 */
 	public int getSize(){
 		return deck.size();
+	}
+	/**
+	 * Returns the desired card from hand.
+	 * @param i Index of the card wanted.
+	 * @return The desired card from hand.
+	 */
+	public Card getCard(int i) {
+		return hand.get(i);
+	}
+
+	/**
+	 * @return
+	 */
+	int getNumOfcards() {
+		return hand.size();
 	}
 }
