@@ -38,9 +38,7 @@ class GameGui extends JFrame implements ActionListener {
 	
 	private static JFrame frame;
 	static JFrame gameFrame;
-	private static JButton peli1;
-	private static JButton peli2;
-	private static JButton closeButton=new JButton("Exit");
+	private static JButton peli1, peli2, closeButton=new JButton("Exit");
 	static Dimension buttonSize=new Dimension((int) 0.2*screenWidth,(int) 0.2*screenHeight);
 	
 	public GameGui() {
@@ -68,6 +66,7 @@ class GameGui extends JFrame implements ActionListener {
         frame.getContentPane().add(peli1);
         frame.getContentPane().add(peli2);
         frame.getContentPane().add(closeButton);
+        frame.setResizable(false);
         
  
         //Display the window.
@@ -86,10 +85,11 @@ class GameGui extends JFrame implements ActionListener {
 		case(0):
 			System.exit(0);
 		case(1):
-			initializeGame("BlackJack");
+			initGame("BlackJack");
 			new Thread(new BlackJack()).start();
 			break;
 		case(2):
+			//initGame("Some other game");
 			JOptionPane.showMessageDialog(null,"You pressed the peli2!");
 			break;
 		default:
@@ -101,13 +101,13 @@ class GameGui extends JFrame implements ActionListener {
 	/**
 	 * @param string
 	 */
-	private void initializeGame(String name) {
+	private void initGame(String name) {
 		gameFrame=new JFrame(name);
-		gameFrame.getContentPane().setLayout(new FlowLayout());
+		gameFrame.setResizable(false);
 		gameFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		gameFrame.setSize(screenWidth/2, screenHeight/2);
         gameFrame.setLocation(screenWidth/4, screenHeight/4);
-        gameFrame.setVisible(true);
+        //gameFrame.setVisible(true);
 		
 	}
 
