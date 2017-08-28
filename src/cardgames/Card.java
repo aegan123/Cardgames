@@ -45,7 +45,7 @@ final class Card implements Comparable<Card>, Serializable {
 	/** Suit of card
 	 * 
 	 * @author Juhani Vähä-Mäkilä, 2017 GNU GPL v2
-	 * @version final
+	 * @version Final
 	 */
 	public enum Suit {
 		HEARTS, CLUBS, DIAMONDS, SPADES
@@ -53,7 +53,7 @@ final class Card implements Comparable<Card>, Serializable {
 	/** Rank of card
 	 * 
 	 * @author Juhani Vähä-Mäkilä, 2017 GNU GPL v2
-	 * @version final
+	 * @version Final
 	 */
 	public enum Rank {
 		A,II,III,IV,V,VI,VII,VIII,IX,X,J,Q,K
@@ -69,13 +69,6 @@ final class Card implements Comparable<Card>, Serializable {
 		this.suit=suit;
 		this.rank=rank;
 		this.pic=new File("img/"+this.asString()+".png");
-	}
-	/**
-	 * Returns a standardized string to be used in a file name.
-	 * @return A standardized string to be used in a file name.
-	 */
-	private String asString() {
-		return this.rank+"_of_"+this.suit;
 	}
 	//*********
 	 //Getters*
@@ -111,6 +104,13 @@ final class Card implements Comparable<Card>, Serializable {
 	//*******
 	//Others*
 	//*******
+	/**
+	 * Returns a standardized string to be used in a file name.
+	 * @return A standardized string to be used in a file name.
+	 */
+	private String asString() {
+		return this.rank+"_of_"+this.suit;
+	}
 	/** Checks if two object are equal.
 	 * @return True if they are, False if not.
 	 */

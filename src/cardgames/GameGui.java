@@ -32,14 +32,14 @@ import javax.swing.*;
 class GameGui extends JFrame implements ActionListener {
 
 	private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	static int screenWidth=(int) screenSize.getWidth();
 	static int screenHeight=(int) screenSize.getHeight();
 	
 	private static JFrame frame;
 	static JFrame gameFrame;
 	private static JButton peli1, peli2, closeButton=new JButton("Exit");
-	static Dimension buttonSize=new Dimension((int) 0.2*screenWidth,(int) 0.2*screenHeight);
+	//static Dimension buttonSize=new Dimension((int) 0.2*screenWidth,(int) 0.2*screenHeight);
 	
 	public GameGui() {
 		frame = new JFrame(Cardgames.programName);
@@ -55,7 +55,7 @@ class GameGui extends JFrame implements ActionListener {
         peli1=new JButton("Peli1");
         peli2=new JButton("Peli2");
         
-        peli1.setSize(buttonSize);
+        //peli1.setSize(buttonSize);
         peli1.validate();
         peli1.setActionCommand("1");
         peli2.setActionCommand("2");
@@ -85,7 +85,7 @@ class GameGui extends JFrame implements ActionListener {
 		case(0):
 			System.exit(0);
 		case(1):
-			initGame("BlackJack");
+			initGame("Blackjack");
 			new Thread(new Blackjack()).start();
 			break;
 		case(2):

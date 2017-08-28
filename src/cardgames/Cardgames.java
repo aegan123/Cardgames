@@ -49,7 +49,6 @@ public class Cardgames {
 			javax.swing.SwingUtilities.invokeLater(new Runnable() {
 	            @Override
 				public void run() {
-	            	//GameGui gui=new GameGui();
 	                new GameGui().createAndShowGUI();
 	            }
 	        });
