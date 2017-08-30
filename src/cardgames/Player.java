@@ -197,7 +197,7 @@ static Player copyOf(Player player){
 /**
  * @return
  */
-int getNumOfcards() {
+int getNumOfCards() {
 	return hand.size();
 }
 

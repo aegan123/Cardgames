@@ -45,7 +45,7 @@ class Dealer implements Serializable {
 	 */
 	private static final Card[] protodeck=createProtoDeck();
 	/**The actual deck used within games. */
-	private LinkedList<Card> deck;
+	private List<Card> deck;
 	/**Dealt hand of cards. */
 	private List<Card> hand;
 	
@@ -154,7 +154,7 @@ public void emptyHand(boolean i) {
 	 * @return The first card from the deck.
 	 */
 	public Card dealCard(){
-		return this.deck.pop();
+		return  ((LinkedList<Card>) this.deck).removeFirst();
 	}
 	/**
 	 * Returns the size of the deck.
@@ -172,10 +172,10 @@ public void emptyHand(boolean i) {
 		return hand.get(i);
 	}
 
-	/**
-	 * @return
+	/**Returns the number of cards in hand.
+	 * @return Returns the number of cards in hand.
 	 */
-	int getNumOfcards() {
+	int getNumOfCards() {
 		return hand.size();
 	}
 }

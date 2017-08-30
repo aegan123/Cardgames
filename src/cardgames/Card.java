@@ -118,8 +118,7 @@ final class Card implements Comparable<Card>, Serializable {
 	  public boolean equals(Object ob) {
 	    if (this==ob) return true;
 	    if (ob==null || !(ob instanceof Card)) return false;
-	    Card k=(Card) ob;
-	    return this.compareTo(k)==0;
+	    return this.compareTo((Card) ob)==0;
 	  }
 	
 	/** Implements the Comparable interface.
