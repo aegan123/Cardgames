@@ -104,7 +104,7 @@ class GameGui extends JFrame implements ActionListener {
 	private void initGame(String name) {
 		gameFrame=new JFrame(name);
 		gameFrame.setResizable(false);
-		gameFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		gameFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		gameFrame.setSize(screenWidth/2, screenHeight/2);
         gameFrame.setLocation(screenWidth/4, screenHeight/4);
         //gameFrame.setVisible(true);

@@ -169,8 +169,7 @@ public void emptyHand() {
   public boolean equals(Object ob) {
     if (this==ob) return true;
     if (ob==null || !(ob instanceof Player)) return false;
-    Player k=(Player) ob;
-    return this.compareTo(k)==0;
+    return this.compareTo((Player) ob)==0;
   }
 /**
  * Compares player using points.

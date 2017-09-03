@@ -161,6 +161,7 @@ public void emptyHand(boolean i) {
 	 * @return Size of the deck.
 	 */
 	public int getSize(){
+		if (deck==null) return 0;
 		return deck.size();
 	}
 	/**
