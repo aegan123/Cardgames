@@ -47,4 +47,16 @@ abstract class Games {
 		}
 		return temp;
 	}
+	/**
+	 * Returns the index of the player whose turn it is.
+	 * @param list Array of players.
+	 * @return Index of the player whose turn it is.
+	 */
+	protected int whosTurn(Player[] list) {
+		int temp=-1;
+		for (int i=0;i<list.length;i++) {
+			if (list[i].isMyTurn()) temp=i;
+		}
+		return temp;
+	}
 }
