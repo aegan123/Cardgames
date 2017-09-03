@@ -20,6 +20,8 @@ package cardgames;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,9 +32,19 @@ import cardgames.Card.Rank;
 /**Implementation of Blackjack.
  * Including needed GUI definitions.
  * @author Juhani Vähä-Mäkilä
- * @version 0.1
+ * @version 0.5
  */
-class Blackjack extends Games implements Runnable, ActionListener {
+/* Rules:
+ * - Blackjack pays 3:2 except if dealer has Blackjack, see even hand.
+ * - Player winning pays 2:1.
+ * - Even hands pays 1:1.
+ * - 10 card charlie: Player wins if player has 10 cards in hand and value is <21, except if dealer has a Blackjack.
+ * - Hand can be insured against dealers Blackjack. Insurance is half of bet.
+ * - Split allowed for same rank card. If splitting aces get only one card. //TODO
+ * - Doubling of bet is allowed for initial deal. Player gets one extra card.
+ * - Dealer takes new cards until the value of hand is at least 17.
+ */
+class Blackjack extends Games implements Runnable, ActionListener, WindowListener  {
 	/**HashMap for counting the value of the hand.*/
 	private static final HashMap<Card.Rank,Integer> MAP=createMap();
 	private static int howManyPlayers;
@@ -43,19 +55,27 @@ class Blackjack extends Games implements Runnable, ActionListener {
 	private JButton moreCards, stay, doubleBet, closeButton, split;
 	/**Panels to divide the screen into three parts.*/
 	private JPanel bottomPanel, middlePanel, topPanel;
-	private JLabel sumOfPlayer=new JLabel(),sumOfDealer=new JLabel();
-	private double bet, winnings=0;
+	/**Different labels needed all over the GUI*/
+	private JLabel sumOfPlayer=new JLabel(),sumOfDealer=new JLabel(),valueOfBet=new JLabel(),numOfCredits=new JLabel();
+	private double bet=0, credits=0,insurance;
 	/**Array to store numerical values of dealt hands. Slot 0 is dealers, all others are for players. */
 	private int[] valueOfHands;
+	private boolean playerInsured=false;
+	//private static final String rules=""; //TODO
 	
 
 public Blackjack(){
 	initiateFrame();
+	initiateLabels();
 	initiateButtons();
+	GameGui.gameFrame.addWindowListener(this);
 	GameGui.gameFrame.setVisible(true);
 
 }
 
+//************************************
+//Initiate the GUI and start the game*
+//************************************
 /**
  * 
  */
@@ -79,32 +99,44 @@ private void initiateButtons() {
 	moreCards=new JButton("More");
 	stay=new JButton("Stay");
 	doubleBet=new JButton("Double down");
-	closeButton=new JButton("Close game");
+	//closeButton=new JButton("Close game");
 	split=new JButton("Split");
 	moreCards.addActionListener(this);
 	stay.addActionListener(this);
 	doubleBet.addActionListener(this);
-	closeButton.addActionListener(this);
+	//closeButton.addActionListener(this);
 	split.addActionListener(this);
 	//closeButton.setSize(GameGui.buttonSize);
 	moreCards.setActionCommand("1");
 	stay.setActionCommand("2");
 	doubleBet.setActionCommand("3");
 	split.setActionCommand("4");
-	doubleBet.setEnabled(false);
-	split.setEnabled(false);
-	closeButton.setActionCommand("0");
+	doubleBet.setVisible(false);
+	split.setVisible(false);
+	moreCards.setVisible(false);
+	stay.setVisible(false);
+	//closeButton.setActionCommand("0");
+	//closeButton.setLocation(0, 0);
 	bottomPanel.add(moreCards);
 	bottomPanel.add(stay);
 	bottomPanel.add(doubleBet);
 	bottomPanel.add(split);
-	bottomPanel.add(closeButton);
-	
+	//bottomPanel.add(closeButton);	
+}
+/**
+ * 
+ */
+private void initiateLabels() {
+	valueOfBet.setVisible(false);
+	//numOfCredits.setVisible(false);
+	bottomPanel.add(new JLabel("Current credits:"));
+	bottomPanel.add(numOfCredits);
+	bottomPanel.add(new JLabel("Current bet:"));
+	bottomPanel.add(valueOfBet);
 	
 }
 @Override
 public void run(){
-	//int sum;
 	running=true;
 	//TODO change back after testing!
 	//howManyPlayers=getNumOfPlayers();
@@ -128,11 +160,44 @@ public void run(){
  * 
  */
 private void startSinglePlayer() {
-	Cardgames.j1.setDeck(4);
+	if(Cardgames.j1.getSize()<=15) {
+	Cardgames.j1.setDeck(4);}
 	players[0].setMyTurn(true);
-	if (winnings==0) winnings=10.0;
-	bet=Double.parseDouble(JOptionPane.showInputDialog("Place your bet.\nYou have "+winnings+" credits."));
+	if (credits<=0) {
+			credits=10.0;
+			numOfCredits.setText(Double.toString(credits));
+			numOfCredits.setVisible(true);
+	}
+	bet=getBet();
+	credits-=bet;
+	valueOfBet.setText(Double.toString(bet));
+	valueOfBet.setVisible(true);
+	numOfCredits.setText(Double.toString(credits));
 	initialDeal(1);
+	if (isBlackjack(players[0])) {
+		moreCards.setVisible(false);
+		stay.setVisible(false);
+		doubleBet.setVisible(false);
+		sumOfPlayer.setText("Blackjack!");
+		middlePanel.updateUI();
+		valueOfHands[1]=21;
+		dealersTurn();
+		JOptionPane.showMessageDialog(GameGui.gameFrame, checkWinnings(players[0]));
+		restartGame();
+	} 
+	else {
+		if (canInsure()) {
+			//JOptionPane.showConfirmDialog(GameGui.gameFrame, "Dealer might have a Blackjac.\nDo you want to insure your hand against it?\nInsurance is half of your current bet.", "Insure?", JOptionPane.YES_NO_OPTION);
+			if (JOptionPane.YES_OPTION==JOptionPane.showConfirmDialog(GameGui.gameFrame, "Dealer might have a Blackjack.\nDo you want to insure your hand against it?\nInsurance is half of your current bet.", "Insure?", JOptionPane.YES_NO_OPTION)) {
+				playerInsured=true;
+				insurance=bet/2; }
+		}
+		moreCards.setVisible(true);
+		stay.setVisible(true);
+		if (canSplit()) {split.setVisible(true);}
+		doubleBet.setVisible(true);
+		middlePanel.updateUI();
+	}
 
 }
 
@@ -148,7 +213,138 @@ private void startMultiPlayer() {
 		initialDeal(howManyPlayers);
 	
 }
+//**********************
+//Hand checking methods*
+//**********************
 /**
+ * @return
+ */
+private boolean isBlackjack(Player player) {
+	return checkHand(player)==11 && (player.getCard(0).getRank().equals(Card.Rank.A) || player.getCard(1).getRank().equals(Card.Rank.A));
+}
+/**
+* @return
+*/
+private boolean isBlackjack(Dealer j1) {
+	return checkHand(j1)==11 && (j1.getCard(0).getRank().equals(Card.Rank.A) || j1.getCard(1).getRank().equals(Card.Rank.A));
+}
+/**
+ * @return
+ */
+private boolean canDouble() {
+	// TODO Auto-generated method stub
+	return false;
+}
+
+/**
+ * @return
+ */
+private boolean canSplit() {
+	return players[0].getCard(0).getRank().equals(players[0].getCard(1).getRank());
+}
+/**
+ * @return
+ */
+private boolean canInsure() {
+	return Cardgames.j1.getCard(0).getRank().equals(Card.Rank.A);
+}
+/**
+*
+* @param player 
+* @return
+*/
+private boolean hasAce(Player player) {
+/*	for (int i=0;i<player.getNumOfcards();i++) {
+		if (player.getCard(i).getRank().equals(Card.Rank.A)) return true;
+	}
+	
+	return false; */
+	return player.getCard(0).getRank().equals(Card.Rank.A) || player.getCard(1).getRank().equals(Card.Rank.A);
+}
+private boolean hasAce(Dealer j1) {
+/*	for (int i=0;i<j1.getNumOfcards();i++) {
+		if (j1.getCard(i).getRank().equals(Card.Rank.A)) return true;
+	}
+	
+	return false; */
+	return j1.getCard(0).getRank().equals(Card.Rank.A);
+}
+/**
+ * @return
+ */
+private boolean isCharlie() {
+	return players[0].getNumOfCards()==10 && valueOfHands[1]<21;
+}
+
+/**
+* @param j1
+* @return
+*/
+private int checkHand(Dealer j1) {
+	int sum=0;
+	for (int i=0;i<j1.getNumOfCards();i++) {
+		sum+=MAP.get(j1.getCard(i).getRank()).intValue();
+	}
+	return sum;
+}
+
+private int checkHand(Player player) {
+	int sum=0;
+	for (int i=0;i<player.getNumOfCards();i++) {
+		sum+=MAP.get(player.getCard(i).getRank()).intValue();
+	}
+	return sum;
+}
+/**
+ * 
+ */
+private String checkWinnings(Player player) {
+	if (valueOfHands[player.getPlayerNum()]>21) {
+		return "You lost.";
+	}
+	if (isCharlie() && !isBlackjack(Cardgames.j1)) {
+		credits+=2*bet;
+		return "You won "+Double.toString(2*bet)+" credits.";
+	}
+	if (isBlackjack(player) && isBlackjack(Cardgames.j1)) {
+		credits+=bet;
+		return "You tied with the dealer.\nYou won "+Double.toString(bet)+" credits.";
+	}
+	if (isBlackjack(player)) {
+		credits+=2.5*bet;
+		return "You got a BlackJack!\nYou won "+Double.toString(2.5*bet)+" credits.";
+	}
+	if (isBlackjack(Cardgames.j1) && !playerInsured) {
+		return "You lost.";
+	}
+	if (isBlackjack(Cardgames.j1) && playerInsured) {
+		credits+=2*insurance;
+		return "Dealer got a Blackjack.\nYour insurance pays you "+Double.toString(2*insurance)+" credits.";
+	}
+	if (valueOfHands[player.getPlayerNum()]>valueOfHands[0]) {
+		credits+=2*bet;
+		return "You won "+Double.toString(2*bet)+" credits.";
+	}
+	if (valueOfHands[0]>valueOfHands[player.getPlayerNum()] && valueOfHands[0]<=21) {
+		return "You lost.";
+	}
+	if (valueOfHands[0]==valueOfHands[player.getPlayerNum()]) {
+		credits+=bet;
+		return "You tied with the dealer.\nYou won "+Double.toString(bet)+" credits.";
+	}
+	if (valueOfHands[0]>21) {
+		credits+=2*bet;
+		return "You won "+Double.toString(2*bet)+" credits.";
+	}
+	
+	return "Not supposed to happen!";
+	
+}
+//*************************
+//Gameplay related methods*
+//*************************
+
+/**Makes the inital deal of the game. Two cards for each player (incl Dealer).
  * @param i Number of players in game.
  */
 private void initialDeal(int i) {
@@ -158,21 +354,17 @@ private void initialDeal(int i) {
 	for (int k=0;k<2;k++) {
 		for (int j=0;j<i;j++) {
 			players[j].addCard(Cardgames.j1.dealCard());
-			//TODO make visible on screen
 			try {
 				img = ImageIO.read(players[j].getCard(k).getPic());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	        //ImageIcon icon=new ImageIcon(img);
-	        //JLabel lbl=new JLabel(icon);
 	        middlePanel.add(new JLabel(new ImageIcon(img))); 
 	        middlePanel.updateUI();
 		}
 		Cardgames.j1.addCard(Cardgames.j1.dealCard());
-		//TODO make visible on screen. second card face down.
-		//BufferedImage img = null;
+		//second card face down.
 		try {
 			if (k==1) img = ImageIO.read(Cardgames.j1.getCard(k).getBackArt());
 			else img = ImageIO.read(Cardgames.j1.getCard(k).getPic());
@@ -180,9 +372,15 @@ private void initialDeal(int i) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        //ImageIcon icon=new ImageIcon(img);
-        //JLabel lbl=new JLabel(icon);
-        if (k==0) sumOfDealer.setText(MAP.get(Cardgames.j1.getCard(k).getRank()).toString());
+        if (k==0) {
+        	if (hasAce(Cardgames.j1)) {
+        		sumOfDealer.setText("1/11");
+        	}
+        	else
+        		//TODO change back after testing
+        		sumOfDealer.setText(MAP.get(Cardgames.j1.getCard(k).getRank()).toString());
+        
+        }
         topPanel.add(new JLabel(new ImageIcon(img)));
         topPanel.updateUI();
 	}
@@ -190,71 +388,129 @@ private void initialDeal(int i) {
 	//topPanel.updateUI();
 	valueOfHands[0]=checkHand(Cardgames.j1);
 	valueOfHands[1]=checkHand(players[0]);
-	if (hasAce(players[0])) sumOfPlayer.setText(valueOfHands[1]+"/"+valueOfHands[1]+10);
+	//****
+    //TODO remove after testing
+    sumOfDealer.setText(Integer.toString(valueOfHands[0]));
+    topPanel.updateUI();
+    //****
+	if (hasAce(players[0])) sumOfPlayer.setText(valueOfHands[1]+"/"+Integer.toString(valueOfHands[1]+10));
 	else sumOfPlayer.setText(Integer.toString(valueOfHands[1]));
 	
 	middlePanel.updateUI();
 }
 
 /**
- * @param player 
- * @param player 
- * @return
+ * 
  */
-private boolean hasAce(Player player) {
-	for (int i=0;i<player.getNumOfcards();i++) {
-		if (player.getCard(i).getRank().equals(Card.Rank.A)) return true;
+private void newCardToPlayer() {
+	BufferedImage img = null;
+	players[0].addCard(Cardgames.j1.dealCard());
+	try {
+		img = ImageIO.read(players[0].getCard(players[0].getNumOfCards()-1).getPic());
+	} catch (IOException f) {
+		// TODO Auto-generated catch block
+		f.printStackTrace();
 	}
+	middlePanel.add(new JLabel(new ImageIcon(img)));
+	valueOfHands[1]=checkHand(players[0]);
+	sumOfPlayer.setText(Integer.toString(valueOfHands[1]));
+	middlePanel.updateUI();
 	
-	return false;
 }
-private boolean hasAce(Dealer j1) {
-	for (int i=0;i<j1.getNumOfcards();i++) {
-		if (j1.getCard(i).getRank().equals(Card.Rank.A)) return true;
-	}
-	
-	return false;
-}
-
 /**
- * @param j1
- * @return
+ * 
  */
-private int checkHand(Dealer j1) {
-	int sum=0;
-	for (int i=0;i<j1.getNumOfcards();i++) {
-		sum+=MAP.get(j1.getCard(i).getRank()).intValue();
+private void dealersTurn() {
+	topPanel.remove(2);
+	try {
+		topPanel.add(new JLabel(new ImageIcon(ImageIO.read(Cardgames.j1.getCard(1).getPic()))));
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
-	return sum;
-}
+	
+	sumOfDealer.setText(Integer.toString(valueOfHands[0]));
+	topPanel.updateUI();
+	if (isBlackjack(Cardgames.j1)) { valueOfHands[0]=21; sumOfDealer.setText("Blackjack!");	topPanel.updateUI();}
+	else {
+	BufferedImage img=null;
+	while(valueOfHands[0]<17) {
+		Cardgames.j1.addCard(Cardgames.j1.dealCard());
+		try {
+			img = ImageIO.read(Cardgames.j1.getCard(Cardgames.j1.getNumOfCards()-1).getPic());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		valueOfHands[0]=checkHand(Cardgames.j1);
+		sumOfDealer.setText(Integer.toString(valueOfHands[0]));
+		topPanel.add(new JLabel(new ImageIcon(img)));
+	    topPanel.updateUI();
+        }
+	}
+	}
 
-private int checkHand(Player player) {
-	int sum=0;
-	for (int i=0;i<player.getNumOfcards();i++) {
-		sum+=MAP.get(player.getCard(i).getRank()).intValue();
-	}
-	return sum;
-}
 /*
 private void jdksjd(){
 	GameGui.gameFrame.getName();
 }*/
 
+
+
+//**************
+//Other methods*
+//**************
+/**
+ * 
+ */
 @Override
 public void actionPerformed(ActionEvent e) {
 	switch (Integer.parseInt(e.getActionCommand())) {
 	case(0):
-		running=false;
-		GameGui.gameFrame.dispose();
+		//Close game.
+		closeGame();
 		break;
 	case(1):
+		//Player takes more cards.
+		doubleBet.setVisible(false);
 		newCardToPlayer();
+		if (isCharlie()) {
+			moreCards.setVisible(false);
+			stay.setVisible(false);
+			bottomPanel.updateUI();
+			JOptionPane.showMessageDialog(GameGui.gameFrame, checkWinnings(players[0]));
+			restartGame();}
+		if (valueOfHands[1]>21) {
+			moreCards.setVisible(false);
+			stay.setVisible(false);
+			bottomPanel.updateUI();
+			dealersTurn();
+			JOptionPane.showMessageDialog(GameGui.gameFrame, checkWinnings(players[0]));
+			restartGame();}
 		break;
 	case(2):
-		// TODO player doesn't take more cards
+		//player doesn't take more cards.
+		if (hasAce(players[0])&&players[0].getNumOfCards()==2) { valueOfHands[1]+=10;sumOfPlayer.setText(Integer.toString(valueOfHands[1]));}
+		doubleBet.setVisible(false);
+		moreCards.setVisible(false);
+		stay.setVisible(false);
+		bottomPanel.updateUI();
+		dealersTurn();
+		JOptionPane.showMessageDialog(GameGui.gameFrame, checkWinnings(players[0]));
+		restartGame();
 		break;
 	case(3):
-		// TODO doubles the bet + one card
+		//Doubles the bet + one card
+		bet+=bet;
+		valueOfBet.setText(Double.toString(bet));
+		doubleBet.setVisible(false);
+		moreCards.setVisible(false);
+		stay.setVisible(false);
+		bottomPanel.updateUI();
+		newCardToPlayer();
+		dealersTurn();
+		JOptionPane.showMessageDialog(GameGui.gameFrame, checkWinnings(players[0]));
+		restartGame();
 		break;
 	case(4):
 		//TODO Split the deck
@@ -264,21 +520,40 @@ public void actionPerformed(ActionEvent e) {
 	}
 	
 }
+
+
 /**
  * 
  */
-private void newCardToPlayer() {
-	BufferedImage img = null;
-	players[0].addCard(Cardgames.j1.dealCard());
-	try {
-		img = ImageIO.read(players[0].getCard(players[0].getNumOfcards()-1).getPic());
-	} catch (IOException f) {
-		// TODO Auto-generated catch block
-		f.printStackTrace();
+private void restartGame() {
+	int temp=JOptionPane.showConfirmDialog(GameGui.gameFrame, "Play again?", "Continue?", JOptionPane.YES_NO_OPTION);
+	if (temp==JOptionPane.NO_OPTION) closeGame();
+	else {
+		numOfCredits.setText(Double.toString(credits));
+		valueOfBet.setText(Double.toString(bet));
+		bottomPanel.updateUI();
+		topPanel.removeAll();
+		topPanel.updateUI();
+		middlePanel.removeAll();
+		middlePanel.updateUI();
+		for (int i=0;i<players.length;i++) {
+			players[i].emptyHand(); }
+		Cardgames.j1.emptyHand(false);
+		startSinglePlayer();
 	}
-	middlePanel.add(new JLabel(new ImageIcon(img)));
-	sumOfPlayer.setText(Integer.toString(checkHand(players[0])));
-	middlePanel.updateUI();
+	
+}
+@Override
+public void windowClosing(WindowEvent e) {
+	closeGame();
+}
+/**
+ * 
+ */
+private void closeGame() {
+	running=false;
+	Cardgames.j1.emptyHand(true);
+	GameGui.gameFrame.dispose();
 	
 }
 
@@ -325,6 +600,46 @@ private int getNumOfPlayers() {
 /**
  * @return
  */
+private double getBet() {
+	double num;
+	String in=null;
+	while (true){
+		
+		while(true){
+			in=JOptionPane.showInputDialog("Place your bet.\nYou have "+credits+" credits.");
+			if (in==null) {
+			int temp=JOptionPane.showConfirmDialog(GameGui.gameFrame, "Are you sure you want to cancel?", "Cancel?", JOptionPane.YES_NO_OPTION);
+			if (temp==JOptionPane.YES_OPTION) {
+			GameGui.gameFrame.dispose();
+			try {
+				Thread.currentThread().join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}} else continue;
+			
+		}
+			break;
+		}
+		try {
+			num=Double.parseDouble(in);
+		}
+		catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(GameGui.gameFrame, "Error! Not a number.\nPlease enter a number.");
+			continue;
+		}
+		if (num<0.5) {
+			JOptionPane.showMessageDialog(GameGui.gameFrame, "Error!\nYou have bet at least 0.5.");
+			continue;
+		}
+		break;
+	}
+	
+	return num;
+}
+/**
+ * @return
+ */
 private static HashMap<Rank, Integer> createMap() {
 	HashMap<Rank,Integer> temp=new HashMap<Rank,Integer>();
 	temp.put(Rank.A, 1);
@@ -342,4 +657,44 @@ private static HashMap<Rank, Integer> createMap() {
 	temp.put(Rank.K, 10);
 	return temp;
 }
+@Override
+public void windowOpened(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void windowClosed(WindowEvent e) {
+	//Oop_harkka.sulje();
+	
+}
+
+
+@Override
+public void windowIconified(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+@Override
+public void windowDeiconified(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+@Override
+public void windowActivated(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+@Override
+public void windowDeactivated(WindowEvent e) {
+	// TODO Auto-generated method stub
+	
+}
+
 }
