@@ -34,7 +34,9 @@ class Player implements Serializable, Comparable<Player> {
  	private List<Card> hand;
 	/** Collected points. Value depends on game. */
  	private int points;
+ 	/**Denotes whether it's this players turn in multiplayer scenarios. */
  	private boolean myTurn;
+ 	/**Players number. Used in multiplayer scenarios. */
 	private int playerNum;
 	private static final long serialVersionUID = 2L;
 
@@ -42,7 +44,10 @@ class Player implements Serializable, Comparable<Player> {
  	//************
  	//Constructor*
  	//************
-
+/**
+ * Constructs a new Player. Sets players number to what the parameter is and initializes the hand.
+ * @param i Players number.
+ */
  public Player(int i) {
 	 this.playerNum=i;
 	 this.name=null;
@@ -107,7 +112,7 @@ public int getPlayerNum(){
 	//Setters*
 	//********
 
-/**Set whether it's this players tuen in game.
+/**Set whether it's this players turn in game.
  * @param myTurn True or False
  */
 public void setMyTurn(boolean myTurn) {
@@ -120,7 +125,7 @@ public void setMyTurn(boolean myTurn) {
 public void setName(String name) {
 	this.name=name;
 }
-/** Sets new points for player
+/** Sets new points for player.
  * @param points Points to add.
  */
 public void setPoints(int points) {
@@ -193,8 +198,8 @@ static Player copyOf(Player player){
 	return new Player(player);
 }
 
-/**
- * @return
+/**Returns the number of cards in hand.
+ * @return The number of cards in hand.
  */
 int getNumOfCards() {
 	return hand.size();

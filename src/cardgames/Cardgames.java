@@ -41,19 +41,20 @@ public class Cardgames {
 	
 	@SuppressWarnings("javadoc")
 	public static void main(String[] args) {
+		//Process commandline arguments, if any.
 		switch (args.length) {
 		case (0):
-			j1=new Dealer();
-			//j1.setDeck(1);
-			//System.out.println("Nothing here yet.\nTo run tests on the backend use commandline option: test.");
+			//No arguments. Create and start the gui. Create new Dealer.
 			javax.swing.SwingUtilities.invokeLater(new Runnable() {
 	            @Override
 				public void run() {
 	                new GameGui().createAndShowGUI();
 	            }
 	        });
+			j1=new Dealer();
 			break;
 		case (1):
+			//Run tests.
 			if (args[0].equals("test")) verbose=true; j1=new Dealer(); runTests();
 			break;
 		default:
@@ -62,7 +63,9 @@ public class Cardgames {
 		
 
 	}
-
+/**
+ * Runs predefined tests on the backend.
+ */
 	private static void runTests() {
 		j1.setDeck(2);
 		System.out.println(copyrightNotice);

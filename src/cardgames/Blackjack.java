@@ -40,7 +40,7 @@ import cardgames.Card.Rank;
  * - Even hands pays 1:1.
  * - 10 card charlie: Player wins if player has 10 cards in hand and value is <21, except if dealer has a Blackjack.
  * - Hand can be insured against dealers Blackjack. Insurance is half of bet.
- * - Split allowed for same rank card. If splitting aces get only one card. //TODO
+ * - Split allowed for same rank cards. If splitting aces get only one card. //TODO
  * - Doubling of bet is allowed for initial deal. Player gets one extra card.
  * - Dealer takes new cards until the value of hand is at least 17.
  */
@@ -77,11 +77,10 @@ public Blackjack(){
 //Initiate the GUI and start the game*
 //************************************
 /**
- * 
+ * Initiates the gameframe.
  */
 private void initiateFrame() {
 	JPanel panel=new JPanel(new BorderLayout());
-	//panel.setLayout(new BoxLayout(panel,BoxLayout.X_AXIS));
 	GameGui.gameFrame.setContentPane(panel);
 	bottomPanel = new JPanel();
 	middlePanel=new JPanel();
@@ -93,7 +92,7 @@ private void initiateFrame() {
 }
 
 /**
- * 
+ * Initiates all the buttons used.
  */
 private void initiateButtons() {
 	moreCards=new JButton("More");
@@ -124,11 +123,10 @@ private void initiateButtons() {
 	//bottomPanel.add(closeButton);	
 }
 /**
- * 
+ * Initiates labels used.
  */
 private void initiateLabels() {
 	valueOfBet.setVisible(false);
-	//numOfCredits.setVisible(false);
 	bottomPanel.add(new JLabel("Current credits:"));
 	bottomPanel.add(numOfCredits);
 	bottomPanel.add(new JLabel("Current bet:"));
@@ -216,19 +214,19 @@ private void startMultiPlayer() {
 //**********************
 //Hand checking methods*
 //**********************
-/**
- * @return
+/**Checks if player has a Blackjack.
+ * @return True if has. Otherwise false.
  */
 private boolean isBlackjack(Player player) {
 	return checkHand(player)==11 && (player.getCard(0).getRank().equals(Card.Rank.A) || player.getCard(1).getRank().equals(Card.Rank.A));
 }
-/**
-* @return
+/**Checks if dealer has a Blackjack.
+ * @return True if has. Otherwise false.
 */
 private boolean isBlackjack(Dealer j1) {
 	return checkHand(j1)==11 && (j1.getCard(0).getRank().equals(Card.Rank.A) || j1.getCard(1).getRank().equals(Card.Rank.A));
 }
-/**
+/**Checks if player can double. Currently not in use.
  * @return
  */
 private boolean canDouble() {
@@ -236,49 +234,44 @@ private boolean canDouble() {
 	return false;
 }
 
-/**
- * @return
+/**Checks if player can split the hand.
+ * @return True if hand can be split. False if not.
  */
 private boolean canSplit() {
 	return players[0].getCard(0).getRank().equals(players[0].getCard(1).getRank());
 }
-/**
- * @return
+/**Checks if player can insure against dealers Blackjack.
+ * @return True/false.
  */
 private boolean canInsure() {
 	return Cardgames.j1.getCard(0).getRank().equals(Card.Rank.A);
 }
 /**
-*
-* @param player 
-* @return
+*Checks if player has an ace.
+* @param player The player whose hand we check.
+* @return True/False.
 */
 private boolean hasAce(Player player) {
-/*	for (int i=0;i<player.getNumOfcards();i++) {
-		if (player.getCard(i).getRank().equals(Card.Rank.A)) return true;
-	}
-	
-	return false; */
 	return player.getCard(0).getRank().equals(Card.Rank.A) || player.getCard(1).getRank().equals(Card.Rank.A);
 }
+/**
+ * Checks if dealer has an ace.
+ * @param j1 Dealer whose hand we check.
+ * @return True/False.
+ */
 private boolean hasAce(Dealer j1) {
-/*	for (int i=0;i<j1.getNumOfcards();i++) {
-		if (j1.getCard(i).getRank().equals(Card.Rank.A)) return true;
-	}
-	
-	return false; */
 	return j1.getCard(0).getRank().equals(Card.Rank.A);
 }
-/**
- * @return
+/**Checks if players hand is a 10 card charlie (see rules).
+ * @return True/False.
  */
 private boolean isCharlie() {
 	return players[0].getNumOfCards()==10 && valueOfHands[1]<21;
 }
 
-/**
-* @param j1
-* @return
+/**Counts the value of hand.
+* @param j1 The Dealer.
+* @return Total value of hand.
 */
 private int checkHand(Dealer j1) {
 	int sum=0;
@@ -287,7 +280,11 @@ private int checkHand(Dealer j1) {
 	}
 	return sum;
 }
-
+/**
+ * Count the value of hand.
+ * @param player The player to check.
+ * @return Total value of hand.
+ */
 private int checkHand(Player player) {
 	int sum=0;
 	for (int i=0;i<player.getNumOfCards();i++) {
@@ -296,7 +293,7 @@ private int checkHand(Player player) {
 	return sum;
 }
 /**
- * 
+ * Checks if player has won. Adds winnings to credits.
  */
 private String checkWinnings(Player player) {
 	if (valueOfHands[player.getPlayerNum()]>21) {
@@ -344,7 +341,7 @@ private String checkWinnings(Player player) {
 //Gameplay related methods*
 //*************************
 
-/**Makes the inital deal of the game. Two cards for each player (incl Dealer).
+/**Makes the initial deal of the game. Two cards for each player (incl Dealer).
  * @param i Number of players in game.
  */
 private void initialDeal(int i) {
@@ -377,15 +374,12 @@ private void initialDeal(int i) {
         		sumOfDealer.setText("1/11");
         	}
         	else
-        		//TODO change back after testing
         		sumOfDealer.setText(MAP.get(Cardgames.j1.getCard(k).getRank()).toString());
         
         }
         topPanel.add(new JLabel(new ImageIcon(img)));
         topPanel.updateUI();
 	}
-	//topPanel.add(new JLabel(Integer.toString((checkHand(Cardgames.j1)))));
-	//topPanel.updateUI();
 	valueOfHands[0]=checkHand(Cardgames.j1);
 	valueOfHands[1]=checkHand(players[0]);
 	//****
@@ -400,7 +394,7 @@ private void initialDeal(int i) {
 }
 
 /**
- * 
+ * Adds a new Card to players hand. Also updates GUI.
  */
 private void newCardToPlayer() {
 	BufferedImage img = null;
@@ -418,7 +412,7 @@ private void newCardToPlayer() {
 	
 }
 /**
- * 
+ * Does the dealers turn after player(s) have finished. Also updates GUI.
  */
 private void dealersTurn() {
 	topPanel.remove(2);
@@ -465,6 +459,7 @@ private void jdksjd(){
  */
 @Override
 public void actionPerformed(ActionEvent e) {
+	//Do something based on button pressed.
 	switch (Integer.parseInt(e.getActionCommand())) {
 	case(0):
 		//Close game.
@@ -523,7 +518,7 @@ public void actionPerformed(ActionEvent e) {
 
 
 /**
- * 
+ * Asks player if they want to continue. Closes game or starts a new game.
  */
 private void restartGame() {
 	int temp=JOptionPane.showConfirmDialog(GameGui.gameFrame, "Play again?", "Continue?", JOptionPane.YES_NO_OPTION);
@@ -548,7 +543,7 @@ public void windowClosing(WindowEvent e) {
 	closeGame();
 }
 /**
- * 
+ * Ends the game and disposes of the window.
  */
 private void closeGame() {
 	running=false;
@@ -597,8 +592,8 @@ private int getNumOfPlayers() {
 	}
 	return num;
 }
-/**
- * @return
+/**Asks user for bet to play with.
+ * @return The desired bet.
  */
 private double getBet() {
 	double num;
@@ -637,8 +632,8 @@ private double getBet() {
 	
 	return num;
 }
-/**
- * @return
+/**Creates the HashMap for for card value counting.
+ * @return HashMap
  */
 private static HashMap<Rank, Integer> createMap() {
 	HashMap<Rank,Integer> temp=new HashMap<Rank,Integer>();
@@ -657,6 +652,9 @@ private static HashMap<Rank, Integer> createMap() {
 	temp.put(Rank.K, 10);
 	return temp;
 }
+//**********
+//Not used.*
+//**********
 @Override
 public void windowOpened(WindowEvent e) {
 	// TODO Auto-generated method stub
@@ -665,7 +663,7 @@ public void windowOpened(WindowEvent e) {
 
 @Override
 public void windowClosed(WindowEvent e) {
-	//Oop_harkka.sulje();
+	//TODO Auto-generated method stub
 	
 }
 
