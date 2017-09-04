@@ -6,5 +6,5 @@ Currently done:
 - Blackjack (mostly done)
 
 Documentation: (not yet done)
-- Javadoc style documntation is found in doc-subfolder.
+- Javadoc style documentation is found in doc-subfolder.
 - Documentation.pdf is more academic type documentation to the whole project.
