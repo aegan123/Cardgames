@@ -36,7 +36,9 @@ import javax.swing.JPanel;
  * @author Juhani Vähä-Mäkilä
  * @version 0.5
  */
-final class BlackjackGui implements ActionListener, WindowListener  {
+final class BlackjackGui extends GameGui implements ActionListener, WindowListener  {
+	/** */
+	private static final long serialVersionUID = 1L;
 	/**All the buttons needed.*/
 	private JButton moreCards, stay, doubleBet, closeButton, split;
 	/**Panels to divide the screen into three parts.*/
