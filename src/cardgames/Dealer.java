@@ -26,8 +26,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
+
 import cardgames.Card.Rank;
 import cardgames.Card.Suit;
 
@@ -121,8 +122,8 @@ class Dealer implements Serializable {
  * @param lkm The number of 52 card decks we want. Is always >=1.
  * @return The desired deck.
  */
-	private LinkedList<Card> copyProtoDeck(int lkm) {
-		LinkedList<Card> temp=new LinkedList<Card>();
+	private Stack<Card> copyProtoDeck(int lkm) {
+		Stack<Card> temp=new Stack<Card>();
 		for (int i=0; i<lkm;i++) {
 			for (int j=0;j<protodeck.length;j++){
 				temp.add(protodeck[j]);
@@ -154,7 +155,7 @@ public void emptyHand(boolean i) {
 	 * @return The first card from the deck.
 	 */
 	public Card dealCard(){
-		return  ((LinkedList<Card>) this.deck).removeFirst();
+		return  ((Stack<Card>) this.deck).pop();
 	}
 	/**
 	 * Returns the size of the deck.
