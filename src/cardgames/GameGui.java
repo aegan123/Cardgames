@@ -18,7 +18,7 @@
 /**
  * Definitions for graphical user interface for games.
  */
-package cardgames;
+package src.cardgames;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

@@ -15,10 +15,10 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
     */
-package cardgames;
+package src.cardgames;
 
 import java.util.HashMap;
-import cardgames.Card.Rank;
+import src.cardgames.Card.Rank;
 
 /**Implementation of Blackjack.
  * @author Juhani Vähä-Mäkilä

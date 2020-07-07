@@ -15,7 +15,7 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
     */
-package cardgames;
+package src.cardgames;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,8 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-import cardgames.Card.Rank;
-import cardgames.Card.Suit;
+import src.cardgames.Card.Rank;
+import src.cardgames.Card.Suit;
 
 /** Class representing the dealer in card games.
  * @version 0.5

@@ -18,7 +18,7 @@
 /**
  * 
  */
-package cardgames;
+package src.cardgames;
 
 import java.util.Arrays;
 
