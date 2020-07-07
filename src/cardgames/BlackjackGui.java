@@ -42,9 +42,9 @@ final class BlackjackGui extends GameGui implements ActionListener, WindowListen
 	/**All the buttons needed.*/
 	private JButton moreCards, stay, doubleBet, closeButton, split;
 	/**Panels to divide the screen into three parts.*/
-	private JPanel bottomPanel, middlePanel, topPanel;
+	private JPanel bottomPanel, middlePanel, topPanel, splitPanel1, splitPanel2;
 	/**Different labels needed all over the GUI*/
-	private JLabel sumOfPlayer=new JLabel(),sumOfDealer=new JLabel(),valueOfBet=new JLabel(),numOfCredits=new JLabel();
+	private JLabel sumOfPlayer=new JLabel(),sumOfDealer=new JLabel(),valueOfBet=new JLabel(),numOfCredits=new JLabel(), splitSum1, splitSum2;
 
 	public BlackjackGui() {
 		init();
@@ -453,6 +453,7 @@ final class BlackjackGui extends GameGui implements ActionListener, WindowListen
 			break;
 		case(4):
 			//TODO Split the deck
+			Blackjack.splitTheHand();
 			break;
 		default:
 			break;
@@ -501,5 +502,38 @@ final class BlackjackGui extends GameGui implements ActionListener, WindowListen
 		// TODO Auto-generated method stub
 		
 	}
+	/**
+	 * 
+	 * @param b True=first part of split hands. False=second part of split hands.
+	 * @param card 
+	 */
+	void splitHand(boolean b, Card card, int valueOfHand) {
+		if(b) {
+			splitPanel1=new JPanel();
+			splitPanel2=new JPanel();
+			middlePanel.removeAll();
+			middlePanel.setLayout(new BorderLayout());
+			middlePanel.add(splitPanel1, BorderLayout.WEST);
+			middlePanel.add(splitPanel2, BorderLayout.EAST);
+			middlePanel.updateUI();
+			splitSum1=new JLabel();
+			try {
+				splitPanel1.add(new JLabel(new ImageIcon(getImg(card))));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else {
+			 splitSum2=new JLabel();
+		}
+		
+	}
+
+	private BufferedImage getImg(Card card) throws IOException {
+		// TODO Auto-generated method stub
+		return ImageIO.read(card.getPic());
+	}
+
 	
 }

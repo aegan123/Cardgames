@@ -17,6 +17,7 @@
     */
 package src.cardgames;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import src.cardgames.Card.Rank;
 
@@ -511,6 +512,20 @@ static void doubleBet() {
 	dealersTurn();
 	gui.showMsg(checkWinnings(players[0]));
 	restartGame();
+}
+
+static void splitTheHand() {
+	int turn=whosTurn(players);
+	ArrayList<ArrayList<Card>> splitHand=new ArrayList<ArrayList<Card>>();
+	splitHand.add(new ArrayList<Card>());
+	splitHand.add(new ArrayList<Card>());
+	splitHand.get(0).add(players[turn].getCard(0));
+	splitHand.get(1).add(players[turn].getCard(1));
+	double betHand1=bet, betHand2=bet;
+	int[] splitValue=new int[2];
+	splitValue[0]=checkHand(players[turn]);
+	splitHand.get(0).add(Cardgames.j1.dealCard());
+	gui.splitHand(true, splitHand.get(0).get(0), splitValue[0]);
 }
 
 
