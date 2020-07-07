@@ -1,0 +1,7 @@
+/bin
+/.classpath
+.directory
+.settings/
+.idea/
+**/*.iml
+**/out/
