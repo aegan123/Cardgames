@@ -15,9 +15,6 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
     */
-/**
- * 
- */
 package src.cardgames;
 
 import java.util.Arrays;
@@ -27,36 +24,36 @@ import java.util.Arrays;
  * @version 0.1
  */
 abstract class Games {
-	/** Adds the desired player to the top score list of a game.
-	 * @param player The player to be added to the list.
-	 * @param list The list to add.
-	 */
-	protected void saveTopScore(Player player, Player[] list) {
-		list[list.length-1]=Player.copyOf(player);
-		Arrays.sort(list);
-	}
-	/**
-	 * Creates a static array of players.
-	 * @param howManyPlayers How many players are there in the game.
-	 * @return An Array containing the desired amount of players.
-	 */
-	protected Player[] getPlayers(int howManyPlayers) {
-		Player[] temp=new Player[howManyPlayers];
-		for (int i=0;i<howManyPlayers;i++) {
-			temp[i]=new Player(i+1);
-		}
-		return temp;
-	}
-	/**
-	 * Returns the index of the player whose turn it is.
-	 * @param list Array of players.
-	 * @return Index of the player whose turn it is.
-	 */
-	protected static int whosTurn(Player[] list) {
-		int temp=-1;
-		for (int i=0;i<list.length;i++) {
-			if (list[i].isMyTurn()) temp=i;
-		}
-		return temp;
-	}
+    /** Adds the desired player to the top score list of a game.
+     * @param player The player to be added to the list.
+     * @param list The list to add.
+     */
+    protected void saveTopScore(Player player, Player[] list) {
+        list[list.length-1]=Player.copyOf(player);
+        Arrays.sort(list);
+    }
+    /**
+     * Creates a static array of players.
+     * @param howManyPlayers How many players are there in the game.
+     * @return An Array containing the desired amount of players.
+     */
+    protected Player[] getPlayers(int howManyPlayers) {
+        Player[] temp=new Player[howManyPlayers];
+        for (int i=0;i<howManyPlayers;i++) {
+            temp[i]=new Player(i+1);
+        }
+        return temp;
+    }
+    /**
+     * Returns the index of the player whose turn it is.
+     * @param list Array of players.
+     * @return Index of the player whose turn it is.
+     */
+    protected static int whosTurn(Player[] list) {
+        int temp=-1;
+        for (int i=0;i<list.length;i++) {
+            if (list[i].isMyTurn()) temp=i;
+        }
+        return temp;
+    }
 }
